@@ -1,21 +1,20 @@
 import Head from "next/head";
-import Image from "next/image";
-import styles from "@/styles/Home.module.css";
 import Header from "@/components/header";
+import SignupForm from "@/components/signup/signupForm";
 
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Evently</title>
-        <meta name="description" content="Evently app" />
+        <title>Evently Sign up</title>
+        <meta name="description" content="sign up form" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header/>
       <main >
-        
+        <SignupForm/>
       </main>
     </>
   );
