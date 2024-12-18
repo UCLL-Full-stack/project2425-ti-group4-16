@@ -48,9 +48,6 @@
     p,
     ul {
         margin: 0;
-    }
-
-    ul {
         padding: 0;
         list-style: none;
     }
@@ -59,4 +56,19 @@
         padding: 0.5rem 1rem;
         font-weight: bold;
     }
+
+    .button-animated {
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    }
+    
+    .button-animated:hover {
+        transform: scale(1.05); 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    }
+    
+    .button-animated:active {
+        transform: scale(0.95); 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+    }
+  
 }

@@ -1,4 +1,3 @@
-// User.ts
 import { Role } from '../types';
 import { Profile } from './profile';
 
@@ -14,20 +13,14 @@ export class User {
         username: string;
         password: string;
         role: Role;
-        profile: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            phoneNumber: string;
-            birthDate: string; 
-        };
+        profile: Profile
     }) {
         this.validate(user);
         this.id = user.id;
         this.username = user.username;
         this.password = user.password;
         this.role = user.role;
-        this.profile = new Profile(user.profile); 
+        this.profile = user.profile; 
     }
 
     getId(): number | undefined {
@@ -54,13 +47,7 @@ export class User {
         username: string;
         password: string;
         role: Role;
-        profile: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            phoneNumber: string;
-            birthDate: string; 
-        };
+        profile: Profile;
     }) {
         if (!user.username?.trim()) {
             throw new Error('Username is required');
@@ -81,11 +68,7 @@ export class User {
             this.username === user.getUsername() &&
             this.password === user.getPassword() &&
             this.role === user.getRole() &&
-            this.profile.getEmail() === user.getProfile().getEmail() && 
-            this.profile.getFirstName() === user.getProfile().getFirstName() &&
-            this.profile.getLastName() === user.getProfile().getLastName() &&
-            this.profile.getPhoneNumber() === user.getProfile().getPhoneNumber() &&
-            this.profile.getBirthDate() === user.getProfile().getBirthDate() 
+            this.profile.equals(user.getProfile())
         );
     }
 }

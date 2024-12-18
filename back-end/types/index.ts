@@ -1,6 +1,6 @@
 type Role = 'admin' | 'user' | 'guest';
 
-type Profile = {
+type ProfileInput = {
     firstName: string;
     lastName: string;
     email: string;
@@ -13,11 +13,34 @@ type UserInput = {
     username: string;
     password: string;
     role: Role;
-    profile: Profile;
+    profile: ProfileInput;
 };
+
+type ImageInput = {
+    id?: number;
+    path: string; 
+    altText: string
+}
+
+type EventInput = {
+    id?: number;
+    name: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    location: string;
+    capacity: number;
+    ticketsSold: number;
+    summary: string;
+    description: string;
+    images: ImageInput[];
+}
+
 
 export {
     Role,
     UserInput,
-    Profile,
+    ProfileInput,
+    ImageInput,
+    EventInput
 };

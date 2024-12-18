@@ -64,4 +64,14 @@ export class Profile {
             throw new Error('Birth date is required');
         }
     }
+
+    equals(profile: Profile): boolean{
+        return(
+            this.firstName === profile.getFirstName() &&
+            this.lastName === profile.getLastName() &&
+            this.email == profile.getEmail() &&
+            this.phoneNumber == profile.getPhoneNumber() &&
+            this.birthDate == profile.getPhoneNumber() 
+        )
+    }
 }
