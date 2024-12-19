@@ -1,4 +1,4 @@
-type Role = 'admin' | 'user' | 'guest';
+type Role = 'admin' | 'user';
 
 type ProfileInput = {
     firstName: string;

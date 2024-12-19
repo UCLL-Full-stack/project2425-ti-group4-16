@@ -1,22 +1,26 @@
-import { Ticket } from "./ticket";
+import { Payment as PaymentPrisma, Ticket as TicketPrisma, TicketType as TicketTypePrisma } from '@prisma/client';
+import { Ticket } from './ticket';
 
-export class Payment{
-    private id? : number;
+export class Payment {
+    private id?: number;
     private numOfTicket: number;
     private amount: number;
     private status: string;
     private date: Date;
     private tickets: Ticket[];
 
-    constructor(payment:{id? : number; numOfTicket: number; amount: number; status: string; date: Date; tickets: Ticket[]}){
+    constructor(payment: { id?: number; status: string; date: Date; tickets: Ticket[] }) {
         this.validate(payment);
         this.id = payment.id;
         this.numOfTicket = payment.tickets.length;
-        this.amount = payment.amount;
+        this.amount = this.setAmount(payment.tickets);
         this.status = payment.status;
         this.date = payment.date;
         this.tickets = payment.tickets;
+    }
 
+    setAmount(tickets: Ticket[]): number {
+        return tickets.reduce((total, ticket) => total + ticket.getTicketType().getPrice(), 0);
     }
 
     getId(): number | undefined {
@@ -38,33 +42,20 @@ export class Payment{
     getDate(): Date {
         return this.date;
     }
-    
-    getTickets(): Ticket[]{
+
+    getTickets(): Ticket[] {
         return this.tickets;
     }
 
-    validate(payment: {
-        numOfTicket: number;
-        amount: number;
-        status: string;
-        date: Date;
-        tickets: Ticket[];
-
-    }) {
+    validate(payment: { status: string; date: Date; tickets: Ticket[] }) {
         if (!payment.status?.trim()) {
-            throw new Error('status is required');
+            throw new Error('Status is required');
         }
         if (!payment.date) {
             throw new Error('Date is required');
         }
-        if (!payment.numOfTicket && payment.numOfTicket !== 0) {
-            throw new Error('price is required');
-        }
-        if (!payment.amount && payment.amount !== 0) {
-            throw new Error('Amount is required');
-        }
-        if(!payment.tickets || payment.tickets.length == 0){
-            throw new Error ('Tickets are required')
+        if (!payment.tickets || payment.tickets.length === 0) {
+            throw new Error('Tickets are required');
         }
     }
 
@@ -73,8 +64,26 @@ export class Payment{
             this.numOfTicket === payment.getNumOfTicket() &&
             this.amount === payment.getAmount() &&
             this.status === payment.getStatus() &&
-            this.date === payment.getDate() &&
-            this.tickets === payment.getTickets()
+            this.date.getTime() === payment.getDate().getTime() && // Compare Date objects correctly
+            JSON.stringify(this.tickets) === JSON.stringify(payment.getTickets())
         );
+    }
+
+    static from({
+        id,
+        numOfTickets,
+        amount,
+        status,
+        date,
+        tickets,
+    }:PaymentPrisma & {
+      tickets: (TicketPrisma & { ticketType: TicketTypePrisma })[]
+    }){
+        return new Payment({
+            id,
+            status,
+            date,
+            tickets: tickets.map((ticket)=> Ticket.from(ticket))
+        })
     }
 }

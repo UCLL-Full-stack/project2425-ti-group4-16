@@ -1,3 +1,4 @@
+import { Profile as profilePrisma } from '@prisma/client';
 
 export class Profile {
     private firstName: string;
@@ -57,21 +58,37 @@ export class Profile {
         if (!profile.email?.trim()) {
             throw new Error('Email is required');
         }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)) {
+            throw new Error('Invalid email format');
+        }
         if (!profile.phoneNumber?.trim()) {
             throw new Error('Phone number is required');
         }
         if (!profile.birthDate?.trim()) {
             throw new Error('Birth date is required');
         }
+        if (isNaN(Date.parse(profile.birthDate))) {
+            throw new Error('Invalid birth date format');
+        }
     }
 
-    equals(profile: Profile): boolean{
-        return(
+    equals(profile: Profile): boolean {
+        return (
             this.firstName === profile.getFirstName() &&
             this.lastName === profile.getLastName() &&
-            this.email == profile.getEmail() &&
-            this.phoneNumber == profile.getPhoneNumber() &&
-            this.birthDate == profile.getPhoneNumber() 
-        )
+            this.email === profile.getEmail() &&
+            this.phoneNumber === profile.getPhoneNumber() &&
+            this.birthDate === profile.getBirthDate()
+        );
+    }
+
+    static from(prismaProfile: profilePrisma): Profile {
+        return new Profile({
+            firstName: prismaProfile.firstName,
+            lastName: prismaProfile.lastName,
+            email: prismaProfile.email,
+            phoneNumber: prismaProfile.phoneNumber,
+            birthDate: prismaProfile.birthDate,
+        });
     }
 }

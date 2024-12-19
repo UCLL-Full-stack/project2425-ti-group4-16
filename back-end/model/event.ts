@@ -2,6 +2,14 @@ import { Category } from "./category";
 import { CategoryClass } from "./categoryClass";
 import { Image } from "./image";
 import { Ticket } from "./ticket";
+import { TicketType } from "./ticketType";
+import {
+  Event as eventPrisma,
+  CategoryClass as categoryPrisma,
+  Ticket as ticketPrisma,
+  TicketType as ticketTypePrisma,
+  Image as imagePrisma
+} from '@prisma/client'
 
 export class Event{
     private id?: number;
@@ -16,7 +24,8 @@ export class Event{
     private description: string;
     private categories: CategoryClass[];
     private images: Image[];
-    private tickets: Ticket[];
+    private ticketTypes: TicketType[]; 
+    private tickets?: Ticket[];
 
     constructor(event: {
         id?: number;
@@ -31,6 +40,7 @@ export class Event{
         description: string;
         categories: CategoryClass[];
         images: Image[];
+        ticketTypes: TicketType[];
         tickets?: Ticket[];
     }){
         this.validate(event)
@@ -46,6 +56,7 @@ export class Event{
         this.description = event.description;
         this.categories = event.categories || [];
         this.images = event.images || [];
+        this.ticketTypes = event.ticketTypes || [];
         this.tickets = event.tickets|| [];
     }
 
@@ -97,7 +108,11 @@ export class Event{
         return this.images;
     }
 
-    getTickets(): Ticket[]{
+    getTicketTypes(): TicketType[]{
+      return this.ticketTypes;
+    }
+
+    getTickets(): Ticket[] | undefined{
       return this.tickets;
     }
 
@@ -113,6 +128,7 @@ export class Event{
         description: string;
         categories: CategoryClass[];
         images: Image[];
+        ticketTypes: TicketType[];
       }) {
         if (!event.name?.trim() || event.name === '') {
           throw new Error('Name is required');
@@ -147,6 +163,9 @@ export class Event{
         if (!event.images) {
           throw new Error('Images are required');
         }
+        if (!event.ticketTypes) {
+          throw new Error('Ticket type is required');
+        }
     }
 
     equals(event: Event): boolean {
@@ -162,7 +181,48 @@ export class Event{
             this.description === event.getDescription() &&
             this.categories === event.getCategories()&&
             this.images === event.getImages() &&
+            this.ticketTypes === event.getTicketTypes() &&
             this.tickets === event.getTickets()
         );
     }
+
+    static from({
+      id,
+      name,
+      date,
+      startTime,
+      endTime,
+      location,
+      capacity,
+      ticketsSold,
+      summary,
+      description,
+      categories,
+      images,
+      ticketTypes,
+      tickets,
+  }:eventPrisma & {
+    categories : categoryPrisma[], 
+    images: imagePrisma[], 
+    ticketTypes:ticketTypePrisma[],
+    tickets: (ticketPrisma & { ticketType: ticketTypePrisma })[]
+  }){
+      return new Event({
+        id, 
+        name, 
+        date,
+        startTime,
+        endTime,
+        location,
+        capacity,
+        ticketsSold,
+        summary,
+        description,
+        categories: categories.map((category)=> CategoryClass.from(category)),
+        images: images.map((image)=> Image.from(image)) ,
+        ticketTypes: ticketTypes.map((ticketType)=> TicketType.from(ticketType)),
+        tickets: tickets.map((ticket)=> Ticket.from(ticket))
+      })
+  }
+  
 }

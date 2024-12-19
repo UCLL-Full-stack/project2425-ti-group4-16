@@ -15,14 +15,14 @@ const EventDetailsContent: React.FC<EventDetailsContentProps> = ({ event }) => {
   const [selectedTicketType, setSelectedTicketType] = useState<string>('')
 
   const handleTicketChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const ticketType = e.target.value;
+    const selectedTicketType = e.target.value;
 
-    const selectedTicket = event.tickets?.find(
-      (ticket) => ticket.ticketType === ticketType
+    const selectedTicket = event.ticketTypes?.find(
+      (ticketType) => ticketType.name === selectedTicketType
     );
 
     setTicketPrice(selectedTicket ? selectedTicket.price : 0);
-    setSelectedTicketType(ticketType);
+    setSelectedTicketType(selectedTicketType);
   };
 
   const handleClick = () => {
@@ -97,9 +97,9 @@ const EventDetailsContent: React.FC<EventDetailsContentProps> = ({ event }) => {
                 <img src="/images/price.png" className="max-h-8" alt="price logo" />
                 <p className="text-gray-800">Ticket price:</p>
                 <p>
-                  {!event.tickets || event.tickets.length === 0
+                  {!event.ticketTypes || event.ticketTypes.length === 0
                     ? "Free entrance"
-                    : `From €${Math.min(...event.tickets.map((ticket) => ticket.price)).toFixed(2)}`}
+                    : `From €${Math.min(...event.ticketTypes.map((ticket) => ticket.price)).toFixed(2)}`}
                 </p>
               </div>
 
@@ -133,8 +133,8 @@ const EventDetailsContent: React.FC<EventDetailsContentProps> = ({ event }) => {
             
             <select  id="ticketType" className="text-black text-center content-center" onChange={handleTicketChange}>
               <option>Ticket type</option>
-              {event.tickets?.map((ticket) => {
-                return <option key={ticket.ticketType} value={ticket.ticketType}>{ticket.ticketType}</option>;
+              {event.ticketTypes?.map((ticketType) => {
+                return <option className= ""key={ticketType.name} value={ticketType.name}>{ticketType.name}</option>;
               })}
 
             </select>

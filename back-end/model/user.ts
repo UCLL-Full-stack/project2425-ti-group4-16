@@ -1,19 +1,24 @@
 import { Role } from '../types';
+import { Payment } from './payment';
 import { Profile } from './profile';
+import { User as userPrisma, Profile as ProfilePrisma, Payment as PaymentPrisma } from '@prisma/client';
+
 
 export class User {
     private id?: number;
     private username: string;
     private password: string;
     private role: Role;
-    private profile: Profile; 
+    private profile: Profile;
+    private invoices?: Payment[]; 
 
     constructor(user: {
         id?: number;
         username: string;
         password: string;
         role: Role;
-        profile: Profile
+        profile: Profile;
+        invoices?: Payment[];
     }) {
         this.validate(user);
         this.id = user.id;
@@ -21,6 +26,7 @@ export class User {
         this.password = user.password;
         this.role = user.role;
         this.profile = user.profile; 
+        this.invoices = user.invoices ||[];
     }
 
     getId(): number | undefined {
@@ -42,6 +48,15 @@ export class User {
     getProfile(): Profile {
         return this.profile; 
     }
+
+    getInvoices(): Payment[] | undefined{
+        return this.invoices;
+    }
+
+    isAdmin(): boolean {
+        return this.role === 'admin';
+    }
+    
 
     validate(user: {
         username: string;
@@ -71,4 +86,23 @@ export class User {
             this.profile.equals(user.getProfile())
         );
     }
+
+    static from({
+        id,
+        username,
+        password,
+        profile,
+        role,
+    }: userPrisma & {
+        profile: ProfilePrisma;
+    }) {
+        return new User({
+            id,
+            username,
+            password,
+            role: role as Role,
+            profile: Profile.from(profile),
+        });
+    }
+    
 }

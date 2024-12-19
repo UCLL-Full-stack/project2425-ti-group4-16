@@ -32,6 +32,7 @@ export default function Home() {
         const response = await EventService.getAllEvents();
         const data = await response.json();
         setEvents(data); 
+        console.log(data)
       } catch (error) {
         console.error("Failed to fetch events:", error);
       } finally {

@@ -28,11 +28,19 @@ export type CategoryClass ={
   color: string;
 }
 
-export type Ticket ={
+
+export type TicketType ={
   id?: number;
-  ticketType: string;
+  name: string;
   price: number;
 }
+
+export type Ticket ={
+  id?: number;
+  purchasedOn: Date;
+  ticketType: TicketType;
+}
+
 
 export type Event = {
   id?: number;
@@ -47,5 +55,6 @@ export type Event = {
   description?: string;
   categories?: CategoryClass[];
   images?: Image[];
+  ticketTypes?: TicketType[];
   tickets?: Ticket[];
 }

@@ -1,4 +1,7 @@
 import { Category, categoryColors } from "./category";
+import { 
+  CategoryClass as categoryPrisma,
+} from '@prisma/client'
 
 export class CategoryClass {
     private id?: number;
@@ -21,6 +24,17 @@ export class CategoryClass {
   
     getColor(): string {
       return this.color;
+    }
+
+    static from({
+      id,
+      name,
+    }: categoryPrisma): CategoryClass {
+        const categoryName = name as Category;
+        return new CategoryClass({
+            id,
+            name: categoryName,
+        });
     }
   }
   

@@ -1,3 +1,5 @@
+import { Image as imagePrisma } from '@prisma/client';
+
 export class Image {
     id? : number;
     path: string;
@@ -20,5 +22,13 @@ export class Image {
 
     getAltText(): string{
         return this.altText;
+    }
+
+    static from({ id, path, altText }: imagePrisma): Image {
+        return new Image({
+            id,
+            path,
+            altText
+        });
     }
 }

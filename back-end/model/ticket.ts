@@ -1,45 +1,56 @@
+import { TicketType } from "./ticketType";
+import { TicketType as ticketTypePrisma, Ticket as ticketPrisma } from '@prisma/client';
+
 export class Ticket {
     private id? : number;
-    private ticketType: string;
-    private price: number;
+    private purchasedOn : Date;
+    private ticketType: TicketType
 
-    constructor(ticket:{id? : number; ticketType: string; price: number;}){
+    constructor(ticket:{id? : number; purchasedOn : Date; ticketType: TicketType}){
         this.validate(ticket);
         this.id = ticket.id;
+        this.purchasedOn = ticket.purchasedOn;
         this.ticketType = ticket.ticketType;
-        this.price = ticket.price;
     }
 
     getId(): number | undefined {
         return this.id;
     }
 
-    getTicketType(): string {
+    getPurchasedOn(): Date{
+        return this.purchasedOn;
+    }
+
+    getTicketType(): TicketType {
         return this.ticketType;
     }
 
-    getPrice(): number{
-        return this.price;
-    }
-
     validate(ticket: {
-        ticketType: string;
-        price: number;
+        ticketType: TicketType;
+        purchasedOn: Date;
 
     }) {
-        if (!ticket.ticketType?.trim()) {
-            throw new Error('ticket Type is required');
+        if (!ticket.ticketType) {
+            throw new Error('ticket type is required');
         }
-        if (!ticket.price && ticket.price !== 0) {
-            throw new Error('price is required');
+        if (!ticket.purchasedOn) {
+            throw new Error('purchase data is required');
         }
     }
 
     equals(ticket: Ticket): boolean {
         return (
             this.ticketType === ticket.getTicketType() &&
-            this.price === ticket.getPrice()
+            this.purchasedOn === ticket.getPurchasedOn()
         );
+    }
+
+    static from({ id, purchasedOn, ticketType }: ticketPrisma& {ticketType: ticketTypePrisma}){
+        return new Ticket({
+            id,
+            purchasedOn,
+            ticketType: TicketType.from(ticketType),
+        });
     }
 
 }    
