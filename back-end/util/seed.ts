@@ -490,7 +490,7 @@ const main = async () => {
     const aliceAdmin = await prisma.user.create({
         data: {
             username: 'admin1',
-            password: 'adminpass',
+            password: await bcrypt.hash('adminPass', 12),
             role: 'ADMIN',
             profile: {
                 create: {
@@ -507,7 +507,7 @@ const main = async () => {
     const bobUser = await prisma.user.create({
         data: {
             username: 'user1',
-            password: 'userpass1',
+            password: await bcrypt.hash('userPass', 12),
             role: 'USER',
             profile: {
                 create: {
@@ -524,7 +524,7 @@ const main = async () => {
     const carolAdmin = await prisma.user.create({
         data: {
             username: 'admin',
-            password: 'adminnn',
+            password: await bcrypt.hash('adminnn', 12),
             role: 'ADMIN',
             profile: {
                 create: {
@@ -541,7 +541,7 @@ const main = async () => {
     const davidGuest = await prisma.user.create({
         data: {
             username: 'guest1',
-            password: 'guestpass',
+            password: await bcrypt.hash('gestpass', 12),
             role: 'USER' ,
             profile: {
                 create: {

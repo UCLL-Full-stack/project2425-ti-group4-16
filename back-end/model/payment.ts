@@ -71,8 +71,6 @@ export class Payment {
 
     static from({
         id,
-        numOfTickets,
-        amount,
         status,
         date,
         tickets,

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import userService from '@/service/UserService'; 
 import { User } from '@/types';
+import { useRouter } from 'next/router';
+import { StatusMessage } from '@/types';
+import UsersTable from '../Users/createTable';
 
 interface Props {
   isOpen: boolean;
@@ -9,28 +12,93 @@ interface Props {
 }
 
 const LoginPopup: React.FC<Props> = ({ isOpen, onClose, onLoginSuccess }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [nameError, setNameError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [statusMessages, setStatusMessages] = useState<StatusMessage[]>([]);
+  const router = useRouter();
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-  
-    const { user, error } = await userService.login(username, password); 
-
-    if (user) {
-      console.log('Login successful, user:', user);
-      setError(null); 
-      onLoginSuccess(user);
-      onClose(); 
-    } else if (error) {
-      console.error('Login failed with error:', error); 
-      setError(error); 
-    }
+  const clearErrors = () => {
+    setNameError(null);
+    setPasswordError(null);
+    setStatusMessages([]);
   };
+
+  const validate = (): boolean => {
+    let result = true;
+
+    if (!name.trim()) {
+      setNameError("login.validate.name"); 
+      result = false;
+    }
+
+    if (!password.trim()) {
+      setPasswordError("login.validate.password"); 
+      result = false;
+    }
+
+    return result;
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    clearErrors();
+
+    if (!validate()) {
+      return;
+    }
+
+    const user = { username: name, password };
+    const response = await userService.loginUser(user);
+    
+    if (response.status === 200) {
+      setStatusMessages([
+        {
+          message: "login.success", 
+          type: "success",
+        },
+      ]);
+
+      const userData = await response.json();
+      sessionStorage.setItem(
+        "loggedInUser",
+        JSON.stringify({
+          token: userData.token,
+          fullname: userData.fullname,
+          username: userData.username,
+          role: userData.role
+        })
+      );
+
+      setTimeout(() => {
+        if (router.pathname === '/') {
+            window.location.reload();
+        } else {
+            router.push('/');
+        }
+    }, 1000);
+
+    } else if (response.status === 401) {
+      const { errorMessage } = await response.json();
+      setStatusMessages([
+        {
+          message: errorMessage,
+          type: "error",
+        },
+      ]);
+    } else {
+      setStatusMessages([
+        {
+          message: "Login failed, please try again", 
+          type: "error",
+        },
+      ]);
+    }
+  } 
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-1000">
@@ -58,9 +126,10 @@ const LoginPopup: React.FC<Props> = ({ isOpen, onClose, onLoginSuccess }) => {
               className="border border-gray-300 rounded p-2 w-full"
               required
               placeholder="your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={name}
+              onChange={(event) => setName(event.target.value)}
             />
+            {nameError && <div className="text-red-800">{nameError}</div>}
           </div>
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium">
@@ -72,15 +141,15 @@ const LoginPopup: React.FC<Props> = ({ isOpen, onClose, onLoginSuccess }) => {
               className="border border-gray-300 rounded p-2 w-full"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(event) => setPassword(event.target.value)}
             />
+            {passwordError && (
+              <div className="text-red-800">{passwordError}</div>
+            )}
           </div>
           <button type="submit" className="w-full bg-stone-700 text-white p-2 rounded mb-4 hover:bg-stone-600">
             Submit
           </button>
-
-          {/* Display error message */}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
 
           {/* Sign-up Link */}
           <div className="text-center">
@@ -90,7 +159,19 @@ const LoginPopup: React.FC<Props> = ({ isOpen, onClose, onLoginSuccess }) => {
             </a>
           </div>
         </form>
+
+        {/* Display status message */}
+        {statusMessages.length > 0 && (
+          <div
+            className={`mt-4 p-4 ${statusMessages[0].type === 'success' ? 'bg-green-200' : 'bg-red-200'}`}
+            role="alert"
+          >
+            {statusMessages[0].message}
+          </div>
+        )}
+        <UsersTable/>
       </div>
+      
     </div>
   );
 };

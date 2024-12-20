@@ -4,6 +4,8 @@ import { Event } from "@/types";
 import { LikeButton } from "./eventImages";
 import { CategoryClass } from "@/types";
 import Router from "next/router";
+import { User } from "@/types";
+import { useEffect } from "react";
 
 type EventDetailsContentProps = {
   event: Event;
@@ -13,6 +15,16 @@ const EventDetailsContent: React.FC<EventDetailsContentProps> = ({ event }) => {
   const [numOfTickets, setNumOfTickets] = useState<number>(1)
   const [ticketPrice, setTicketPrice] = useState<number>(0)
   const [selectedTicketType, setSelectedTicketType] = useState<string>('')
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const storedUser = sessionStorage.getItem('loggedInUser');
+    if (storedUser) {
+        setCurrentUser(JSON.parse(storedUser));
+        setIsLoggedIn(true);
+    }
+}, []);
 
   const handleTicketChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTicketType = e.target.value;
@@ -29,6 +41,10 @@ const EventDetailsContent: React.FC<EventDetailsContentProps> = ({ event }) => {
     if (!ticketPrice) {
       alert("Please select a ticket type.");
       return;
+    }
+    if (!isLoggedIn){
+      alert("Please log in before you make a purchase.");
+      Router.push('/signup')
     }
 
     Router.push({

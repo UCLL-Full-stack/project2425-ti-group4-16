@@ -39,7 +39,7 @@ const EventItem: React.FC<{ event: Event }> = ({ event }) => {
     <div 
         key={event.id}
         className="border p-4 rounded-lg shadow-md bg-white" 
-        onClick={() => router.push(`/activities/${event.id}`)}>
+        onClick={() => router.push(`/events/${event.id}`)}>
       <div className="relative">
         {event.images && event.images.length > 0 ? (
           <>

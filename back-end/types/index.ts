@@ -1,11 +1,31 @@
-type Role = 'admin' | 'user';
+type Role = "USER" | "ADMIN";
 
 type ProfileInput = {
+    id?: number;
     firstName: string;
     lastName: string;
     email: string;
     phoneNumber: string;
     birthDate: string;
+};
+
+type TicketTypeInput={
+    id?: number;
+    name: string;
+    price: number;
+}
+
+type TicketInput ={
+    id?: number;
+    purchasedOn: dateFns;
+    ticketType: TicketTypeInput;
+}
+
+type PaymentInput = {
+    id?: number;
+    status: string;
+    date: Date; 
+    tickets: TicketInput[]
 };
 
 type UserInput = {
@@ -14,12 +34,18 @@ type UserInput = {
     password: string;
     role: Role;
     profile: ProfileInput;
+    invoices?: PaymentInput[]; 
 };
-
 type ImageInput = {
     id?: number;
     path: string; 
     altText: string
+}
+
+type CategoryClassInput={
+    id?: number;
+    name: string;
+    color: string;
 }
 
 type EventInput = {
@@ -33,8 +59,20 @@ type EventInput = {
     ticketsSold: number;
     summary: string;
     description: string;
+    categories: CategoryClassInput[];
     images: ImageInput[];
+    ticketTypes: TicketTypeInput[];
+    tickets: TicketInput[];
 }
+
+
+type AuthenticationResponse = {
+    token: string;
+    username: string;
+    fullname: string;
+    role: string;
+};
+
 
 
 export {
@@ -42,5 +80,6 @@ export {
     UserInput,
     ProfileInput,
     ImageInput,
-    EventInput
+    EventInput,
+    AuthenticationResponse
 };

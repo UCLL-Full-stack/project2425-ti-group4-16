@@ -1,8 +1,13 @@
 import { Role } from '../types';
 import { Payment } from './payment';
 import { Profile } from './profile';
-import { User as userPrisma, Profile as ProfilePrisma, Payment as PaymentPrisma } from '@prisma/client';
-
+import { 
+    User as UserPrisma, 
+    Profile as ProfilePrisma, 
+    Payment as PaymentPrisma, 
+    Ticket as TicketPrisma, 
+    TicketType as TicketTypePrisma 
+} from '@prisma/client';
 
 export class User {
     private id?: number;
@@ -10,7 +15,7 @@ export class User {
     private password: string;
     private role: Role;
     private profile: Profile;
-    private invoices?: Payment[]; 
+    private invoices?: Payment[];
 
     constructor(user: {
         id?: number;
@@ -25,8 +30,8 @@ export class User {
         this.username = user.username;
         this.password = user.password;
         this.role = user.role;
-        this.profile = user.profile; 
-        this.invoices = user.invoices ||[];
+        this.profile = user.profile;
+        this.invoices = user.invoices || [];
     }
 
     getId(): number | undefined {
@@ -46,17 +51,16 @@ export class User {
     }
 
     getProfile(): Profile {
-        return this.profile; 
+        return this.profile;
     }
 
-    getInvoices(): Payment[] | undefined{
+    getInvoices(): Payment[] | undefined {
         return this.invoices;
     }
 
     isAdmin(): boolean {
-        return this.role === 'admin';
+        return this.role === 'ADMIN';
     }
-    
 
     validate(user: {
         username: string;
@@ -65,16 +69,19 @@ export class User {
         profile: Profile;
     }) {
         if (!user.username?.trim()) {
-            throw new Error('Username is required');
+            throw new Error('Username is required.');
+        }
+        if (user.username.length < 3) {
+            throw new Error('Username must be at least 3 characters long.');
         }
         if (!user.password?.trim()) {
-            throw new Error('Password is required');
+            throw new Error('Password is required.');
         }
         if (!user.role) {
-            throw new Error('Role is required');
+            throw new Error('Role is required.');
         }
         if (!user.profile) {
-            throw new Error('Profile information is required');
+            throw new Error('Profile information is required.');
         }
     }
 
@@ -93,16 +100,23 @@ export class User {
         password,
         profile,
         role,
-    }: userPrisma & {
-        profile: ProfilePrisma;
-    }) {
+        invoices,
+    }: UserPrisma & {
+        profile: ProfilePrisma | null;
+        invoices: (PaymentPrisma & { tickets: (TicketPrisma & { ticketType: TicketTypePrisma })[] })[];
+    }): User {
+        if (!profile) {
+            throw new Error(`User with ID ${id} is missing a profile.`);
+        }
+
+
         return new User({
             id,
             username,
             password,
             role: role as Role,
             profile: Profile.from(profile),
+            invoices: invoices.map((payment) => Payment.from(payment)),
         });
     }
-    
 }

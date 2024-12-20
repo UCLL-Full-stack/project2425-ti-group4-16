@@ -1,4 +1,4 @@
-export type Role = 'admin' | 'user' | 'guest';
+export type Role = 'ADMIN'|'USER';
 
 export type Profile = {
   firstName?: string;
@@ -58,3 +58,16 @@ export type Event = {
   ticketTypes?: TicketType[];
   tickets?: Ticket[];
 }
+
+export type StatusMessage = {
+  message: string;
+  type: "error" | "success";
+};
+
+export type LoggedUser = {
+    
+  fullname: string,
+  role: Role,
+  token: string,
+  username: string
+  }

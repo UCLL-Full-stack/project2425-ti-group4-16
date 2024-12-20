@@ -52,58 +52,37 @@ const getEventById = async ({ id }: { id: number }): Promise<Event | null> => {
     }
 }
 
-const addEvent = async ({
-    name,
-    date,
-    startTime,
-    endTime,
-    location,
-    capacity,
-    ticketsSold,
-    summary,
-    description,
-    categories,
-    images,
-    ticketTypes,
-    tickets,
+const createEvent = async ({
+    event,
 }: {
-    name: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    location: string;
-    capacity: number;
-    ticketsSold: number;
-    summary: string;
-    description: string;
-    categories: { id: number }[];
-    images: { id: number }[];
-    ticketTypes: { id: number }[];
-    tickets: { id: number; ticketTypeId: number }[];  // Include ticketTypeId in tickets
+    event: Event;  
 }): Promise<Event> => {
     try {
         const eventPrisma = await database.event.create({
             data: {
-                name,
-                date,
-                startTime,
-                endTime,
-                location,
-                capacity,
-                ticketsSold,
-                summary,
-                description,
+                name: event.getName(),
+                date: event.getDate(),
+                startTime: event.getStartTime(),
+                endTime: event.getEndTime(),
+                location: event.getLocation(),
+                capacity: event.getCapacity(),
+                ticketsSold: event.getTicketSold(),
+                summary: event.getSummary(),
+                description: event.getDescription(),
                 categories: {
-                    connect: categories.map((category) => ({ id: category.id })),
+                    connect: event.getCategories().map((category) => ({ id: category.getId() })),
                 },
                 images: {
-                    connect: images.map((image) => ({ id: image.id })),
+                    connect: event.getImages().map((image) => ({ id: image.getId() })),
                 },
                 ticketTypes: {
-                    connect: ticketTypes.map((ticketType) => ({ id: ticketType.id })),
+                    connect: event.getTicketTypes().map((ticketType) => ({ id: ticketType.getId() })),
                 },
                 tickets: {
-                    connect: tickets.map((ticket) => ({ id: ticket.id })),
+                    connect: event.getTickets()?.map((ticket) => ({
+                        id: ticket.getId(),
+                        ticketTypeId: ticket.getTicketType().getId(),
+                    })) || [],
                 },
             },
             include: {
@@ -112,7 +91,7 @@ const addEvent = async ({
                 ticketTypes: true,
                 tickets: {
                     include: {
-                        ticketType : true
+                        ticketType: true,
                     },
                 },  
             },
@@ -127,8 +106,9 @@ const addEvent = async ({
 
 
 
+
 export default {
     getAllEvents,
     getEventById,
-    addEvent
+    createEvent
 };
