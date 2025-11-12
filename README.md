@@ -9,6 +9,9 @@ Admins can create and manage events, edit details (date, place, price), and trac
 
 ---
 
+![alt text](image.png)
+
+
 ## 🧩 Tech Stack
 
 | Layer | Technology |
