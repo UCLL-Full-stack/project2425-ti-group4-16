@@ -147,7 +147,7 @@ const LoginPopup: React.FC<Props> = ({ isOpen, onClose, onLoginSuccess }) => {
               <div className="text-red-800">{passwordError}</div>
             )}
           </div>
-          <button type="submit" className="w-full bg-stone-700 text-white p-2 rounded mb-4 hover:bg-stone-600">
+          <button type="submit" className="w-full bg-stone-700 text-white p-2 rounded mb-4 hover:bg-[#75246b]">
             Submit
           </button>
 

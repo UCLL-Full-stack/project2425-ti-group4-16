@@ -148,7 +148,7 @@ const SignupForm: React.FC = () => {
 
         {/* Submit Button - spans full width */}
         <div className="col-span-2 h-12">
-          <button type="submit" className="w-full bg-stone-700 text-white p-2 rounded mt-2">
+          <button type="submit" className="w-full bg-stone-700 text-white p-2 rounded mt-2 hover:bg-[#75246b]">
             Sign Up
           </button>
         </div>

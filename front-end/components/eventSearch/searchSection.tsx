@@ -87,7 +87,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ onSearch }) => {
         <div className="mt-4">
           <button
             onClick={handleReset}
-            className="w-full bg-stone-600 hover:bg-stone-500 text-white font-semibold py-2 px-4 rounded"
+            className="w-full bg-stone-600 hover:bg-[#75246b] text-white font-semibold py-2 px-4 rounded"
           >
             Reset Filters
           </button>

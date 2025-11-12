@@ -132,7 +132,7 @@ type ConfirmationPageProps = {
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="button-animated w-full flex items-center justify-center rounded text-white bg-gradient-to-r from-yellow-500 to-orange-700 hover:bg-gray-700 text-lg">
+                        className="button-animated w-full flex items-center justify-center rounded text-white bg-gradient-to-r from-yellow-500 to-orange-700 hover:bg-[#75246b] text-lg">
                         Book ticket €{totalPrice}
                     </button>
                 </form>

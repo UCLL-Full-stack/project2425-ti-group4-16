@@ -28,18 +28,18 @@ export default function Home() {
 
   useEffect(() => {
     const fetchEvents = async () => {
-  try {
-    const response = await EventService.getAllEvents();
-    const data = await response.json();
-    console.log("API Response:", data);
-    setEvents(data); 
-  } catch (error) {
-    console.error("Failed to fetch events:", error);
-    setEvents([]); 
-  } finally {
-    setLoading(false);
-  }
-};
+      try {
+        const response = await EventService.getAllEvents();
+        const data = await response.json();
+        console.log("API Response:", data);
+        setEvents(data); 
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+        setEvents([]); 
+      } finally {
+        setLoading(false);
+      }
+    };
 
 
     fetchEvents();

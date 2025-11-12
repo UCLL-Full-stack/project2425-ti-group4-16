@@ -4,6 +4,7 @@ import LoginPopup from './login/loginPopup';
 import { useState, useEffect } from 'react';
 import { User } from '@/types';
 import { useRouter } from 'next/router';
+import ContactForm from './contact/contactForm';
 
 const Header: React.FC = () => {
     const [logonWindowOpen, setLoginWindowOpen] = useState(false);
@@ -12,6 +13,7 @@ const Header: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [userRole, setUserRole] = useState<string | null>(null);
     const router = useRouter();
+    const [contactFormOpen, setContactFormOpen] = useState(false);
 
     useEffect(() => {
         const storedUser = sessionStorage.getItem('loggedInUser');
@@ -23,6 +25,8 @@ const Header: React.FC = () => {
 
     const handleLoginClick = () => setLoginWindowOpen(true);
     const handleCloseModal = () => setLoginWindowOpen(false);
+    const handleContactClick = () => setContactFormOpen(true);
+    const handleCloseContactForm =()  => setContactFormOpen(false);
 
     const handleLoginSuccess = (user: User) => {
         setCurrentUser(user);
@@ -37,6 +41,8 @@ const Header: React.FC = () => {
         setIsLoggedIn(false);
         router.push('/');
     };
+
+
 
     return (
         <header className="sticky top-0 w-full bg-zinc-800 bg-gradient shadow-md z-50 p-3">
@@ -100,7 +106,7 @@ const Header: React.FC = () => {
                 </Link>
 
                 {/* Right: Contact Button */}
-                <div className="flex items-center mr-5">
+                <div className="flex items-center mr-5" onClick={handleContactClick}>
                     <a href="mailto:your-email@example.com" className="button-animated w-28 h-12 flex items-center justify-center gap-2 rounded-full text-white border p-2">
                         <i className="fa fa-envelope"></i>
                         <span>Contact</span>
@@ -113,6 +119,11 @@ const Header: React.FC = () => {
                 isOpen={logonWindowOpen}
                 onClose={handleCloseModal}
                 onLoginSuccess={handleLoginSuccess}
+            />
+
+            <ContactForm
+                isOpen={contactFormOpen}
+                onClose={handleCloseContactForm}
             />
         </header>
     );
