@@ -1,13 +1,65 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/twPj_hbU)
+
 # Project description
 
-Title: Evently 
+# 🎉 Evently
 
-Description: With the app Evently, we want users to be able to browse the upcoming events 
-by category, location, and date and register for their favorites. Users can create accounts to 
-manage their bookings and receive event updates. 
-The events can be created and managed by the admin. They can modify the event 
-information such as date, place and price, and keep track on the attendees and the revenue 
-for each event.
+**Evently** is a full-stack web application that allows users to explore upcoming events by category, location, and date — and register for their favorites.  
+Users can create accounts to manage bookings and receive event updates.  
+Admins can create and manage events, edit details (date, place, price), and track attendees and revenue.
 
-### \<Student 1 Miyuki Ishida\> / 
+---
+
+## 🧩 Tech Stack
+
+| Layer | Technology |
+| :---- | :---------- |
+| **Frontend** | Next.js • React • Tailwind CSS |
+| **Backend** | Express.js • Prisma ORM • PostgreSQL |
+
+
+## 💻 Run Locally
+
+Follow these steps to set up **Evently** on your local machine.
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/UCLL-Full-stack/project2425-ti-group4-16.git
+
+```
+
+### 2️⃣ Create the Database and User
+
+Run the following commands in **psql**:
+
+```sql
+CREATE DATABASE evently;
+
+-- Create a dedicated user
+CREATE USER evently_user WITH PASSWORD 'evently_pass';
+GRANT ALL PRIVILEGES ON DATABASE evently TO evently_user;
+```
+
+### 3️⃣ Backend Setup
+- Create .env file according to .env.example in the root of backend folder
+- Navigate to the backend directory:
+
+```bash
+cd backend
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
+npx ts-node util/seed.ts
+npm run start
+```
+
+
+### 4️⃣ Frontend Setup
+- Create .env file as .env.example in the root of frontend folder
+- Start frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev   
+
