@@ -5,7 +5,6 @@
 
 **Evently** is a full-stack web application that allows users to explore upcoming events by category, location, and date — and register for their favorites.  
 Users can create accounts to manage bookings and receive event updates.  
-Admins can create and manage events, edit details (date, place, price), and track attendees and revenue.
 
 ---
 
@@ -18,6 +17,9 @@ Admins can create and manage events, edit details (date, place, price), and trac
 | :---- | :---------- |
 | **Frontend** | Next.js • React • Tailwind CSS |
 | **Backend** | Express.js • Prisma ORM • PostgreSQL |
+
+## Project analysis
+In analysis folder you can find data models and project pitch with user stories and wireframes for **Evently**.
 
 
 ## 💻 Run Locally
